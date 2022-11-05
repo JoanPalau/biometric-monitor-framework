@@ -99,11 +99,18 @@ void setupHearth() {
   }
 }
 
+void cleanUpData(){
+  for (byte x = 0 ; x < RATE_SIZE ; x++) {
+    rates[x] = 0;
+  }
+}
+
 void setup() {
   pinMode(BUILTIN_LED, OUTPUT);
   Serial.begin(115200);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
+  cleanUpData();
   setupHearth();
 }
 
@@ -138,11 +145,13 @@ void reportMQTT() {
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
-    float report = -1.0;
+    float report = -0.0;
     if (
       foundDevice == 1 && lastIrValue > 50000 && beatAvg > 30
     ) {
       report = beatAvg;
+    } else if (foundDevice == 1 && lastIrValue < 50000) {
+      cleanUpData();
     }
     snprintf (msg, MSG_BUFFER_SIZE, "%f", report);
     Serial.print("Publish message: ");
