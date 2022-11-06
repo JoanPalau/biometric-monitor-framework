@@ -11,13 +11,10 @@ const char* mqtt_server = "192.168.60.84";
 
 #define TOPIC_ACCELEROMETER "sensor/accelerometer"
 #define TOPIC_DEFAULT "-1.0"
+#define MSG_LNG 18
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-unsigned long lastMsg = 0;
-#define MSG_BUFFER_SIZE	(50)
-char msg[MSG_BUFFER_SIZE];
-int value = 0;
 
 
 void setup_wifi() {
@@ -66,33 +63,37 @@ void reconnect() {
   }
 }
 
+void reportMQTT(const char* msg) {
+  Serial.print("Publish message: ");
+  Serial.println(msg);
+  client.publish(TOPIC_ACCELEROMETER, msg);
+}
+
 void setup() {
   pinMode(BUILTIN_LED, OUTPUT);
   Serial.begin(115200);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
+  Wire.begin(0, 2);
 }
 
-void reportMQTT() {
-  unsigned long now = millis();
-  if (now - lastMsg > 2000) {
-    lastMsg = now;
-    ++value;
-    float report = -0.0;
-    snprintf (msg, MSG_BUFFER_SIZE, "%f", report);
-    Serial.print("Publish message: ");
-    Serial.println(msg);
-    client.publish(TOPIC_ACCELEROMETER, msg);
-  }
-}
 
 void loop() {
-    //TODO: BLE WIRE READ
+    char msg[MSG_LNG];
+    Wire.requestFrom(8, MSG_LNG);
+    int i = 0;
+    while (Wire.available()) { // peripheral may send less than requested
+        char c = Wire.read(); // receive a byte as character
+        msg[i] = c;
+        i++;
+  }
+  msg[i] = '\0';
+  reportMQTT(msg);
+
 
   if (!client.connected()) {
     reconnect();
   }
   client.loop();
-
-  reportMQTT();
+  delay(50);
 }
