@@ -119,7 +119,7 @@ if __name__ == '__main__':
             ["null", "rest", "running", "walking"],
             ["null", "erratic", "falling"],
             [35.0, 150.0],
-            [-100.0, 100.0],
+            [-30.0, 35.0],
             map_row
         ]
     )
