@@ -104,17 +104,21 @@ def map_row(df):
     return df.apply(data_gen, axis=1)
 
 if __name__ == '__main__':
-    df = generate_fake_dataframe(
-        10000,
+    generator = lambda x: generate_fake_dataframe(
+        x,
         cols="ccffc",
         col_names=["movement", "unexpected", "bpm", "bpm_growth", "prediction"],
         intervals=[
             ["null", "rest", "running", "walking"],
             ["null", "erratic", "falling"],
-            [35.0, 255.0],
+            [35.0, 150.0],
             [-100.0, 100.0],
             map_row
         ]
     )
+    df = generator(150)
+    print(df.to_string())
+    df.to_csv('train_data.csv', index=False)
+    df = generator(150)
     print(df.to_string())
     df.to_csv('test_data.csv', index=False)

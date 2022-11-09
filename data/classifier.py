@@ -27,7 +27,7 @@ def get_x_y(path):
     return X, y
 
 
-clf = DecisionTreeClassifier(max_depth=7)
+clf = DecisionTreeClassifier(max_depth=5)
 # X, y = load_iris(return_X_y=True)
 X, y = get_x_y('train_data.csv')
 # print(X)
