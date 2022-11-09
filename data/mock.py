@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from itertools import cycle
+from numpy.random import uniform
 
 
 def generate_fake_dataframe(size, cols, col_names=None, intervals=None, seed=None):
@@ -68,31 +69,37 @@ def data_gen(row):
     if unexpected == 'falling':
         return 'high'
 
-    if bpm > 135:
+    extremly_low_bpm = uniform(38,44)
+    extremly_high_bpm = uniform(135,145)
+    high_bpm = uniform(85,95)
+    low_bpm = uniform(45, 60)
+    high_bpm_growth = uniform(22,28)
+
+    if bpm > extremly_high_bpm:
         return 'high'
 
-    if bpm < 40:
+    if bpm < extremly_low_bpm:
         return 'high'
 
-    if movement == 'rest' and 50 < bpm and bpm < 90:
+    if movement == 'rest' and low_bpm < bpm and bpm < high_bpm:
         return 'low'
 
     if movement == 'rest':
         return 'medium'
 
-    if unexpected == 'erratic' and 50 < bpm and bpm < 90:
+    if unexpected == 'erratic' and low_bpm < bpm and bpm < high_bpm:
         return 'medium'
 
     if unexpected == 'erratic':
         return 'high'
 
-    if movement == 'walking' and abs(bpm_growth) < 25:
+    if movement == 'walking' and abs(bpm_growth) < high_bpm_growth:
         return 'low'
 
-    if movement == 'walking' and 50 < bpm and bpm < 90:
+    if movement == 'walking' and low_bpm < bpm and bpm < high_bpm:
         return 'medium'
 
-    if movement == 'running' and bpm_growth > 25:
+    if movement == 'running' and bpm_growth > high_bpm_growth:
         return 'high'
 
     if movement == 'running':
