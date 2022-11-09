@@ -11,10 +11,11 @@ def get_x_y(path):
 
     mov = ["null", "rest", "running", "walking"]
     err = ["null", "erratic", "falling"]
+    cls = ["uncertain", "low", "medium", "high"]
 
     def map_row(row):
         a, a2, b, c, d = row
-        return (mov.index(a), err.index(a2), float(b), float(c)), d
+        return (mov.index(a), err.index(a2), float(b), float(c)), cls.index(d)
 
     def mapped_to_X(row):
         return row[0]

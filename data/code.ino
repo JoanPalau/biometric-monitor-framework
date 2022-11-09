@@ -11,7 +11,7 @@ namespace Eloquent {
                     int predict(float *x) {
                         if (x[1] <= 0.5) {
                             if (x[0] <= 0.5) {
-                                return 3;
+                                return 0;
                             }
 
                             else {
@@ -39,8 +39,8 @@ namespace Eloquent {
 
                                 else {
                                     if (x[0] <= 1.5) {
-                                        if (x[2] <= 77.92547225952148) {
-                                            return 0;
+                                        if (x[3] <= 33.06558132171631) {
+                                            return 1;
                                         }
 
                                         else {
@@ -50,11 +50,11 @@ namespace Eloquent {
 
                                     else {
                                         if (x[0] <= 2.5) {
-                                            return 0;
+                                            return 3;
                                         }
 
                                         else {
-                                            return 3;
+                                            return 0;
                                         }
                                     }
                                 }
@@ -65,7 +65,7 @@ namespace Eloquent {
                             if (x[1] <= 1.5) {
                                 if (x[2] <= 96.09757232666016) {
                                     if (x[2] <= 48.26219177246094) {
-                                        return 0;
+                                        return 3;
                                     }
 
                                     else {
@@ -82,7 +82,7 @@ namespace Eloquent {
                                 else {
                                     if (x[0] <= 1.5) {
                                         if (x[0] <= 0.5) {
-                                            return 0;
+                                            return 3;
                                         }
 
                                         else {
@@ -91,13 +91,13 @@ namespace Eloquent {
                                     }
 
                                     else {
-                                        return 0;
+                                        return 3;
                                     }
                                 }
                             }
 
                             else {
-                                return 0;
+                                return 3;
                             }
                         }
                     }
