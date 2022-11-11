@@ -6,7 +6,7 @@ LCD_I2C lcd(0x27, 16, 2); // Default address of most PCF8574 modules, change acc
 // Displays the Heart Rate into the lcd Screen
 void printHeartRate();
 
-// LOW Priority task defined in ESP32_LOGIC
+// Medium Priority task defined in ESP32_LOGIC
 // Displays the >Heart Rate to the LCD display
 void DisplayHeartRate(void *pvParameters)
 {
