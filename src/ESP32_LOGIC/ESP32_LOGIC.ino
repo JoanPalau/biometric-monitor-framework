@@ -22,6 +22,30 @@ void initializeGlobalVariables()
 
 void initializeLowPriorityTasks()
 {
+
+  xTaskCreatePinnedToCore(
+    DisplayDebugInformation,
+    "Display Debug Information through Serial Port",
+    2048,
+    NULL,
+    1,
+    NULL,
+    0
+  );
+}
+
+void initializeMediumPriorityTasks()
+{
+  xTaskCreatePinnedToCore(
+    DetermineRiskStatus,
+    "Compute the risk status of the user",
+    2048,
+    NULL,
+    1,
+    NULL,
+    0
+  );
+
   xTaskCreatePinnedToCore(
     DisplayHeartRate,
     "Display Heart Rate (HR)",
@@ -35,17 +59,12 @@ void initializeLowPriorityTasks()
   xTaskCreatePinnedToCore(
     DisplayHealthStatus,
     "Display Health Status",
-    1024,
+    4096,
     NULL,
-    0,
+    1,
     NULL,
     0
   );
-}
-
-void initializeMediumPriorityTasks()
-{
-  // No medium priority tasks yet to be executed
 }
 
 void initializeHighPriorityTasks()
