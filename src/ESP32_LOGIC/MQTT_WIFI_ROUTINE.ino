@@ -6,8 +6,12 @@ void displayConnectingWifiMessage();
 void displayStartConnectingWiFiMessage();
 void displayConnectedWiFiMessage();
 
+
 // Serial port display to show the data received
 void displayReceivedWifiData(char* topic, byte* payload, unsigned int length);
+// Compute data obtained from heart topic
+void storeHeartData(char* topic, byte* payload, unsigned int length);
+void storeAccelerometerData(char* topic, byte* payload, unsigned int length);
 
 void wifi_setup();
 void wifi_start();
@@ -15,7 +19,7 @@ void wifi_start();
 
 const char* ssid = "JMGS20FE";
 const char* password = "pwsf9034";
-const char* mqtt_server = "192.168.106.84";
+const char* mqtt_server = "192.168.38.84";
 
 const char* clientID ="ESP32";
 const char* clientUserName="ESP32";
@@ -70,7 +74,8 @@ void wifi_start()
     client.setCallback(displayReceivedWifiData);
     //client.connect(clientID,clientUserName,clientPassword);
     client.connect(clientID);
-    client.subscribe("test/topic");
+    client.subscribe("sensor/heart");
+    client.subscribe("sensor/accelerometer");
 }
 
 void displayConnectingWifiMessage()
@@ -101,6 +106,17 @@ void displayConnectedWiFiMessage()
 
 void displayReceivedWifiData(char* topic, byte* payload, unsigned int length)
 {
+  if(strcmp(topic, "sensor/heart") == 0)
+  {
+    storeHeartData(topic, payload, length);
+  } else if(strcmp(topic, "sensor/accelerometer") == 0)
+  {
+    storeAccelerometerData(topic, payload, length);
+  }
+}
+
+void storeHeartData(char* topic, byte* payload, unsigned int length)
+{
   xSemaphoreTake(xHeartRateData, TICKS_TO_WAIT_HEART);
   heartRate = atoi((const char*)payload);
   xSemaphoreGive(xHeartRateData);
@@ -113,5 +129,42 @@ void displayReceivedWifiData(char* topic, byte* payload, unsigned int length)
     Serial.print((char)payload[i]);
   }
   Serial.println();
+  xSemaphoreGive(xSerialPort);
+}
+
+void storeAccelerometerData(char* topic, byte* payload, unsigned int length)
+{
+  xSemaphoreTake(xAccelerometerData, TICKS_TO_WAIT_HEART);
+  int j = 0;
+  payload[length] = '\0';
+
+  char res[10];
+  int z=0;
+  for(int i=0; i<length; i++)
+  {
+    if(payload[i] == '\t'){
+      j++;
+      continue;
+    } else if(payload[i] != '\t'  && j < 3){
+      //accelerometerX = atof((const char*)payload);
+      continue;
+    } else {
+      // Parse the user action
+      res[z] = payload[i];
+      z++;
+    }
+  }
+  res[z] = '\0';
+  strcpy(accelerometerResult, (const char*)res);
+
+
+
+  xSemaphoreTake(xSerialPort, TICKS_TO_WAIT_SERIAL);
+  Serial.print("Accelerometer data");
+  Serial.println();
+  Serial.println((const char*)res);
+  Serial.println();
+  xSemaphoreGive(xAccelerometerData);
+  // x \t y\t z\t String
   xSemaphoreGive(xSerialPort);
 }
