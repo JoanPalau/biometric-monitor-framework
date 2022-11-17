@@ -7,11 +7,11 @@
 
 const char* ssid = "JMGS20FE";
 const char* password = "pwsf9034";
-const char* mqtt_server = "192.168.60.84";
+const char* mqtt_server = "192.168.45.84";
 
 #define TOPIC_ACCELEROMETER "sensor/accelerometer"
 #define TOPIC_DEFAULT "-1.0"
-#define MSG_LNG 18
+#define MSG_LNG 30
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -95,5 +95,5 @@ void loop() {
     reconnect();
   }
   client.loop();
-  delay(50);
+  delay(150);
 }
