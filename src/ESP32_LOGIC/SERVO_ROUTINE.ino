@@ -38,7 +38,8 @@ void DisplayHealthStatus(void *pvParameters)
       status = RUNCERTAIN;
     }
     
-    vTaskDelay(1000);
+    
+    vTaskDelay(10000);
   }
 }
 

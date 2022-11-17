@@ -4,9 +4,20 @@
 #define TICKS_TO_WAIT_SERIAL 150
 #define TICKS_TO_WAIT_HEART 500
 
+#define NO_DATA_INPUT_FLOAT -1.0
+#define NO_DATA_INPUT_INT -1
+
 // Controls access to the Heart Rate data variable
 SemaphoreHandle_t xHeartRateData;
-int heartRate = -1; // TODO: remove this when real data available
+int heartRate = NO_DATA_INPUT_INT; // Initial value when no data is feeded
+
+SemaphoreHandle_t xAccelerometerData;
+float accelerometerX = NO_DATA_INPUT_FLOAT; // Initial values when no data is feeded
+float accelerometerY = NO_DATA_INPUT_FLOAT; 
+float accelerometerZ = NO_DATA_INPUT_FLOAT; 
+char accelerometerResult[10];
+
+float data = NO_DATA_INPUT_FLOAT;
 
 // Controls access to the Serial Port to display data
 SemaphoreHandle_t xSerialPort;
@@ -15,9 +26,11 @@ void initializeGlobalVariables()
 {
   xHeartRateData = xSemaphoreCreateBinary();
   xSerialPort = xSemaphoreCreateBinary();
+  xAccelerometerData = xSemaphoreCreateBinary();
   // free the "mutex" to allow tasks to start using it
   xSemaphoreGive(xHeartRateData);
   xSemaphoreGive(xSerialPort);
+  xSemaphoreGive(xAccelerometerData);
 }
 
 void initializeLowPriorityTasks()
@@ -72,7 +85,7 @@ void initializeHighPriorityTasks()
   xTaskCreatePinnedToCore(
       ObtainData,
       "Obtain data from the MQTT server",
-      2048,
+      4096,
       NULL,
       1,
       NULL,
