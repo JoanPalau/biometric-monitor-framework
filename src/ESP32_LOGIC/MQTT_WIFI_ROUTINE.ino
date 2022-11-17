@@ -19,7 +19,7 @@ void wifi_start();
 
 const char* ssid = "JMGS20FE";
 const char* password = "pwsf9034";
-const char* mqtt_server = "192.168.38.84";
+const char* mqtt_server = "192.168.45.84";
 
 const char* clientID ="ESP32";
 const char* clientUserName="ESP32";
