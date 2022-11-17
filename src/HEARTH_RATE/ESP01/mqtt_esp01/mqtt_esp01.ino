@@ -22,9 +22,9 @@ long lastIrValue = 0;
 
 const char* ssid = "JMGS20FE";
 const char* password = "pwsf9034";
-const char* mqtt_server = "192.168.60.84";
+const char* mqtt_server = "192.168.45.84";
 
-#define TOPIC_HEART_RATE "sensor/hearth"
+#define TOPIC_HEART_RATE "sensor/heart"
 #define TOPIC_DEFAULT "-1.0"
 
 WiFiClient espClient;
@@ -81,7 +81,7 @@ void reconnect() {
   }
 }
 
-void setupHearth() {
+void setupheart() {
   // Initialize sensor
   //if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) //Use default I2C port, 400kHz speed
   Wire.begin(0, 2);
@@ -111,7 +111,7 @@ void setup() {
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   cleanUpData();
-  setupHearth();
+  setupheart();
 }
 
 void updateBPM() {
@@ -145,7 +145,7 @@ void reportMQTT() {
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
-    float report = -0.0;
+    float report = -1.0;
     if (
       foundDevice == 1 && lastIrValue > 50000 && beatAvg > 30
     ) {
@@ -153,7 +153,7 @@ void reportMQTT() {
     } else if (foundDevice == 1 && lastIrValue < 50000) {
       cleanUpData();
     }
-    snprintf (msg, MSG_BUFFER_SIZE, "%f", report);
+    snprintf (msg, MSG_BUFFER_SIZE, "%f",  (float) report);
     Serial.print("Publish message: ");
     Serial.println(msg);
     client.publish(TOPIC_HEART_RATE, msg);
