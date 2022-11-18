@@ -15,7 +15,7 @@ void DisplayHealthStatus(void *pvParameters)
   (void) pvParameters;
   Servo riskMonitor;
 
-  
+  riskMonitorStatus localStatus;
   riskMonitor.setPeriodHertz(50);    // standard 50 hz servo
 	riskMonitor.attach(12, 500, 2400);
   riskMonitor.write(UNCERTAIN_DEGREES);
@@ -23,15 +23,10 @@ void DisplayHealthStatus(void *pvParameters)
   // Main routine loop
   for(;;)
   {
-    if(status == RUNCERTAIN) {
-        riskMonitor.write(statusToDegrees(status));
-        status = RLOW;
-    } else {
-      riskMonitor.write(30);
-      status = RUNCERTAIN;
-    }
-    
-    
+    xSemaphoreTake(xRiskStatusData, TICKS_TO_WAIT_RISK);
+    localStatus = status;
+    xSemaphoreGive(xRiskStatusData);
+    riskMonitor.write(statusToDegrees(localStatus));
     vTaskDelay(10000);
   }
 }

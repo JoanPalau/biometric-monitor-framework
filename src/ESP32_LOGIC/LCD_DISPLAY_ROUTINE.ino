@@ -95,12 +95,13 @@ void DisplayHeartRate(void *pvParameters)
 void printHeartRate()
 {
     char buffer[5];
+    int localHeartRate;
     xSemaphoreTake(xHeartRateData, TICKS_TO_WAIT_HEART);
-  
-    sprintf(buffer, "%d", heartRate);
+    localHeartRate = heartRate;
+    xSemaphoreGive(xHeartRateData);
+    sprintf(buffer, "%d", localHeartRate);
     lcd.print(buffer);
     
-    xSemaphoreGive(xHeartRateData);
 }
 
 bool hasValidData()
