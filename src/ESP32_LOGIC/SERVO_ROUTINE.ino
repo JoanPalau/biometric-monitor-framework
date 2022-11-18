@@ -5,13 +5,6 @@
 #define MEDIUM_DEGREES 60
 #define HIGH_DEGREES 120
 
-enum riskMonitorStatus {
-  RUNCERTAIN = 0,
-  RLOW = 1,
-  RMEDIUM = 2,
-  RHIGH = 3
-};
-
 int statusToDegrees(int riskStatus);
 
 // Medium Priority task defined in ESP32_LOGIC
@@ -22,7 +15,7 @@ void DisplayHealthStatus(void *pvParameters)
   (void) pvParameters;
   Servo riskMonitor;
 
-  riskMonitorStatus status = RUNCERTAIN;  
+  
   riskMonitor.setPeriodHertz(50);    // standard 50 hz servo
 	riskMonitor.attach(12, 500, 2400);
   riskMonitor.write(UNCERTAIN_DEGREES);

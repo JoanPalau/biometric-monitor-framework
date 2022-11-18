@@ -3,6 +3,7 @@
 #define SERIAL_BAUD_RATE 115200
 #define TICKS_TO_WAIT_SERIAL 150
 #define TICKS_TO_WAIT_HEART 500
+#define TICKS_TO_WAIT_RISK 500
 
 #define NO_DATA_INPUT_FLOAT -1.0
 #define NO_DATA_INPUT_INT -1
@@ -15,7 +16,17 @@ SemaphoreHandle_t xAccelerometerData;
 float accelerometerX = NO_DATA_INPUT_FLOAT; // Initial values when no data is feeded
 float accelerometerY = NO_DATA_INPUT_FLOAT; 
 float accelerometerZ = NO_DATA_INPUT_FLOAT; 
-char accelerometerResult[10];
+#define ACCELEROMETER_RESULT_SIZE 10
+char accelerometerResult[ACCELEROMETER_RESULT_SIZE];
+
+SemaphoreHandle_t xRiskStatusData;
+enum riskMonitorStatus {
+  RUNCERTAIN = 0,
+  RLOW = 1,
+  RMEDIUM = 2,
+  RHIGH = 3
+};
+riskMonitorStatus status = RUNCERTAIN;
 
 float data = NO_DATA_INPUT_FLOAT;
 
@@ -27,10 +38,12 @@ void initializeGlobalVariables()
   xHeartRateData = xSemaphoreCreateBinary();
   xSerialPort = xSemaphoreCreateBinary();
   xAccelerometerData = xSemaphoreCreateBinary();
+  xRiskStatusData = xSemaphoreCreateBinary();
   // free the "mutex" to allow tasks to start using it
   xSemaphoreGive(xHeartRateData);
   xSemaphoreGive(xSerialPort);
   xSemaphoreGive(xAccelerometerData);
+  xSemaphoreGive(xRiskStatusData);
 }
 
 void initializeLowPriorityTasks()

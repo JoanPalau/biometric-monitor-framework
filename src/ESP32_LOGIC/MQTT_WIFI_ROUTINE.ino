@@ -138,7 +138,7 @@ void storeAccelerometerData(char* topic, byte* payload, unsigned int length)
   int j = 0;
   payload[length] = '\0';
 
-  char res[10];
+  char res[ACCELEROMETER_RESULT_SIZE];
   int z=0;
   for(int i=0; i<length; i++)
   {
