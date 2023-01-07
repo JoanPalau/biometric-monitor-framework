@@ -1,7 +1,7 @@
 #include <ESP32Servo.h>
 
-#define UNCERTAIN_DEGREES 180
-#define LOW_DEGREES 0
+#define UNCERTAIN_DEGREES 178
+#define LOW_DEGREES 2
 #define MEDIUM_DEGREES 60
 #define HIGH_DEGREES 120
 

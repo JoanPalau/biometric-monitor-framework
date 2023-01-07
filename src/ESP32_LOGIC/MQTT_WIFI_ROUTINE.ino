@@ -19,7 +19,7 @@ void wifi_start();
 
 const char* ssid = "JMGS20FE";
 const char* password = "pwsf9034";
-const char* mqtt_server = "192.168.45.84";
+const char* mqtt_server = "192.168.41.84";
 
 const char* clientID ="ESP32";
 const char* clientUserName="ESP32";
@@ -132,6 +132,26 @@ void storeHeartData(char* topic, byte* payload, unsigned int length)
   xSemaphoreGive(xSerialPort);
 }
 
+activityMonitorStatus enumResultAccelerometer(const char* res) {
+  if(strcmp(res, "rest") == 0) {
+    return SREST;
+  }
+  if(strcmp(res, "running") == 0 || strcmp(res, "run") == 0) {
+    return SRUNNING;
+  }
+  if(strcmp(res, "walking") == 0) {
+    return SWALKING;
+  }
+  if(strcmp(res, "falling") == 0) {
+    return SFALLING;
+  }
+  if(strcmp(res, "erratic") == 0) {
+    return SFALLING;
+  }
+
+  return SREST;
+}
+
 void storeAccelerometerData(char* topic, byte* payload, unsigned int length)
 {
   xSemaphoreTake(xAccelerometerData, TICKS_TO_WAIT_HEART);
@@ -155,7 +175,7 @@ void storeAccelerometerData(char* topic, byte* payload, unsigned int length)
     }
   }
   res[z] = '\0';
-  strcpy(accelerometerResult, (const char*)res);
+  accelerometerResult = enumResultAccelerometer((const char*) res);
 
 
 

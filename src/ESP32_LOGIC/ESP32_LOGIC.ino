@@ -17,7 +17,6 @@ float accelerometerX = NO_DATA_INPUT_FLOAT; // Initial values when no data is fe
 float accelerometerY = NO_DATA_INPUT_FLOAT; 
 float accelerometerZ = NO_DATA_INPUT_FLOAT; 
 #define ACCELEROMETER_RESULT_SIZE 10
-char accelerometerResult[ACCELEROMETER_RESULT_SIZE];
 
 SemaphoreHandle_t xRiskStatusData;
 enum riskMonitorStatus {
@@ -26,7 +25,18 @@ enum riskMonitorStatus {
   RMEDIUM = 2,
   RHIGH = 3
 };
+#define NUMBER_RISK_MONITOR_STATUS 4
 riskMonitorStatus status = RUNCERTAIN;
+
+enum activityMonitorStatus {
+  SREST = 0,
+  SWALKING = 1,
+  SRUNNING = 2,
+  SFALLING = 3,
+  SERRATIC = 4
+};
+#define NUMBER_STATUS_ACITIVTY_MONITOR 5
+activityMonitorStatus accelerometerResult;
 
 float data = NO_DATA_INPUT_FLOAT;
 
