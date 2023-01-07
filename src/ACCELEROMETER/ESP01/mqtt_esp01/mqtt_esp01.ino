@@ -7,7 +7,7 @@
 
 const char* ssid = "JMGS20FE";
 const char* password = "pwsf9034";
-const char* mqtt_server = "192.168.45.84";
+const char* mqtt_server = "192.168.41.84";
 
 #define TOPIC_ACCELEROMETER "sensor/accelerometer"
 #define TOPIC_DEFAULT "-1.0"
