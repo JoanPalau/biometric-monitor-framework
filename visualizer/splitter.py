@@ -58,7 +58,8 @@ class MQTTVisualizer:
                 self.client.publish(f'visualizer/accelerometer/{topic}', val)
             
             import random
-            r = random.randint(66, 80)
+            r = random.randint(20, 40)
+            print('Heart', r)
             self.client.publish(f'sensor/heart', r)
     
     def main(self):

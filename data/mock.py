@@ -70,49 +70,45 @@ def data_gen(row):
         return 'high'
 
     extremly_low_bpm = uniform(38,44)
-    extremly_high_bpm = uniform(135,145)
+    extremly_high_bpm = uniform(135,140)
     high_bpm = uniform(85,95)
     low_bpm = uniform(45, 60)
-    high_bpm_growth = uniform(22,28)
+    high_bpm_growth = uniform(12,15)
+
+    if movement == "null" and unexpected == "null":
+        return None
 
     if bpm > extremly_high_bpm:
         return 'high'
 
     if bpm < extremly_low_bpm:
-        return 'high'
-
-    if movement == 'rest' and low_bpm < bpm and bpm < high_bpm:
-        return 'low'
+        return 'uncertain'
 
     if movement == 'rest':
+        if bpm < high_bpm:
+            return 'low'
         return 'medium'
 
-    if unexpected == 'erratic' and low_bpm < bpm and bpm < high_bpm:
-        return 'medium'
-
-    if unexpected == 'erratic':
+    if movement == 'walking':
+        if bpm < low_bpm:
+            return 'low'
+        if bpm < high_bpm:
+            return 'medium'
         return 'high'
+    
 
-    if movement == 'walking' and abs(bpm_growth) < high_bpm_growth:
-        return 'low'
-
-    if movement == 'walking' and low_bpm < bpm and bpm < high_bpm:
+    if bpm < low_bpm:
+        return 'uncertain'
+    if bpm < high_bpm:
         return 'medium'
-
-    if movement == 'running' and bpm_growth > high_bpm_growth:
-        return 'high'
-
-    if movement == 'running':
-        return 'medium'
-
-    return 'uncertain'
+    return 'high'
 
 def map_row(df):
     return df.apply(data_gen, axis=1)
 
-if __name__ == '__main__':
-    generator = lambda x: generate_fake_dataframe(
-        x,
+def generator(num_rows):
+    df = generate_fake_dataframe(
+        num_rows,
         cols="ccffc",
         col_names=["movement", "unexpected", "bpm", "bpm_growth", "prediction"],
         intervals=[
@@ -123,9 +119,13 @@ if __name__ == '__main__':
             map_row
         ]
     )
-    df = generator(150)
+
+    return df[df['prediction'].notnull()]
+
+if __name__ == '__main__':
+    df = generator(300)
     print(df.to_string())
     df.to_csv('train_data.csv', index=False)
-    df = generator(150)
+    df = generator(300)
     print(df.to_string())
     df.to_csv('test_data.csv', index=False)

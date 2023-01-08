@@ -24,6 +24,7 @@ const char* mqtt_server = "192.168.41.84";
 const char* clientID ="ESP32";
 const char* clientUserName="ESP32";
 const char* clientPassword="x";
+bool wifiConnected = false;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -60,6 +61,7 @@ void wifi_setup()
     displayConnectingWifiMessage();
     vTaskDelay(500);
   }
+  wifiConnected = true;
 
   //randomSeed(micros()); Is it really needed? It seems to work fine like this
 
@@ -121,15 +123,15 @@ void storeHeartData(char* topic, byte* payload, unsigned int length)
   heartRate = atoi((const char*)payload);
   xSemaphoreGive(xHeartRateData);
 
-  xSemaphoreTake(xSerialPort, TICKS_TO_WAIT_SERIAL);
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
-  xSemaphoreGive(xSerialPort);
+  // xSemaphoreTake(xSerialPort, TICKS_TO_WAIT_SERIAL);
+  // Serial.print("Message arrived [");
+  // Serial.print(topic);
+  // Serial.print("] ");
+  // for (int i = 0; i < length; i++) {
+  //   Serial.print((char)payload[i]);
+  // }
+  // Serial.println();
+  // xSemaphoreGive(xSerialPort);
 }
 
 activityMonitorStatus enumResultAccelerometer(const char* res) {
@@ -179,12 +181,12 @@ void storeAccelerometerData(char* topic, byte* payload, unsigned int length)
 
 
 
-  xSemaphoreTake(xSerialPort, TICKS_TO_WAIT_SERIAL);
-  Serial.print("Accelerometer data");
-  Serial.println();
-  Serial.println((const char*)res);
-  Serial.println();
+  // xSemaphoreTake(xSerialPort, TICKS_TO_WAIT_SERIAL);
+  // Serial.print("Accelerometer data");
+  // Serial.println();
+  // Serial.println((const char*)res);
+  // Serial.println();
   xSemaphoreGive(xAccelerometerData);
   // x \t y\t z\t String
-  xSemaphoreGive(xSerialPort);
+  // xSemaphoreGive(xSerialPort);
 }

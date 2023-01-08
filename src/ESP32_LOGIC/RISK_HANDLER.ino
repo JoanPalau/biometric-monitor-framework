@@ -4,10 +4,10 @@
 
 using namespace Eloquent::ML::Port;
 
-#define QUEUE_SIZE_MONITOR 20
+#define QUEUE_SIZE_MONITOR 15
 #define QUEUE_SIZE_BPM 10
 
-/*
+
 class QueueMonitorStatus {
   int index = 0;
   int numberItems = 0;
@@ -93,24 +93,29 @@ class QueueRiskMonitor {
 };
 
 class QueueBPM {
-  int index = 0;
+  int start = 0;
+  int end = 0;
   int numberItems = 0;
   float content[QUEUE_SIZE_BPM];
 
   public:
 
   QueueBPM() {
-    this->index = 0;
+    this->start = 0;
+    this->end = 0;
     this->numberItems = 0;
   }
 
   void addItem(float value) {
-    content[index] = value;
-    index++;
-    if (index > numberItems) {
-      numberItems = index;
+    content[end] = value;
+    end++;
+    if (numberItems < QUEUE_SIZE_BPM) {
+      numberItems++;
     }
-    index = index % QUEUE_SIZE_BPM;
+    end = end % QUEUE_SIZE_BPM;
+    if (end == start) {
+      start = (start + 1) % QUEUE_SIZE_BPM;
+    }
   }
 
   float growthRate() {
@@ -119,26 +124,23 @@ class QueueBPM {
       return 0;
     }
 
-    int firstIndex = 0;
-    if (numberItems == QUEUE_SIZE_BPM) {
-      firstIndex = (index + 1) % QUEUE_SIZE_BPM;
-    }
-    int lastIndex = (index - 1) % QUEUE_SIZE_BPM;
-
     float growthRate = 0;
-    for (int i = firstIndex; i != lastIndex; i = (i + 1) % QUEUE_SIZE_BPM) {
-      growthRate += (content[i + 1] - content[i]);
+    int lastIndex = (end - 1);
+    if (end == 0) {
+      lastIndex = QUEUE_SIZE_BPM - 1;
+    }
+    for (int i = start; i != lastIndex; i = (i + 1) % QUEUE_SIZE_BPM) {
+      int nextIndex = (i + 1) % QUEUE_SIZE_BPM;
+      growthRate += (content[nextIndex] - content[i]);
     }
     return growthRate / (numberItems - 1);
   }
 };
-*/
 
-/*
 QueueBPM queueBPM;
 QueueMonitorStatus queueMonitorStatus;
 QueueRiskMonitor queueRiskMonitor;
-*/
+
 
 int getIndexMov(activityMonitorStatus res){
   if(res == SREST) {
@@ -166,16 +168,19 @@ riskMonitorStatus getRiskStatusfromIndex(int index) {
   if (index == 1) {
     return RLOW;
   }
-  if (index == 1) {
+  if (index == 2) {
     return RMEDIUM;
   }
-  if (index == 1) {
+  if (index == 3) {
     return RHIGH;
   }
   return RUNCERTAIN;
 }
 
 void updateRisk(){
+  if (!wifiConnected) {
+    return;
+  }
   activityMonitorStatus latestStatus;
   xSemaphoreTake(xAccelerometerData, TICKS_TO_WAIT_HEART);
   latestStatus = accelerometerResult;
@@ -183,18 +188,18 @@ void updateRisk(){
   xSemaphoreTake(xHeartRateData, TICKS_TO_WAIT_HEART);
   float bpm = (float) heartRate;
   xSemaphoreGive(xHeartRateData);
-  /*
+  
   queueBPM.addItem(bpm);
   queueMonitorStatus.addItem(latestStatus);
   activityMonitorStatus commonMonitor = queueMonitorStatus.mostCommon();
-  */
-  activityMonitorStatus commonMonitor = latestStatus;
+  
+  // activityMonitorStatus commonMonitor = latestStatus;
 
   float dataPrediction[4];
   int indexMov = getIndexMov(commonMonitor);
   int indexUnexpected = getIndexUnexpected(commonMonitor);
-  // float bpmGrowth = queueBPM.growthRate();
-  float bpmGrowth = 0;
+  float bpmGrowth = queueBPM.growthRate();
+  // float bpmGrowth = 0;
 
   dataPrediction[0] = (float) indexMov;
   dataPrediction[1] = (float) indexUnexpected;
@@ -203,15 +208,29 @@ void updateRisk(){
   DecisionTree decissionTree;
   int resultIndex = decissionTree.predict(dataPrediction);
   riskMonitorStatus resultStatus = getRiskStatusfromIndex(resultIndex);
-  /*
+  
   queueRiskMonitor.addItem(resultStatus);
   riskMonitorStatus commonResultStatus = queueRiskMonitor.mostCommon();
-  */
-  riskMonitorStatus commonResultStatus = resultStatus;
+  
+  //riskMonitorStatus commonResultStatus = resultStatus;
 
   xSemaphoreTake(xRiskStatusData, TICKS_TO_WAIT_RISK);
   status = commonResultStatus;
   xSemaphoreGive(xRiskStatusData);
+
+  xSemaphoreTake(xSerialPort, TICKS_TO_WAIT_SERIAL);
+  Serial.println("Data");
+  Serial.println(commonMonitor);
+  Serial.println(bpm);
+  Serial.println(bpmGrowth);
+  Serial.print("Current: ");
+  Serial.print(resultStatus);
+  Serial.print(" Common: ");
+  Serial.println(commonResultStatus);
+  Serial.print("Acc Result: ");
+  Serial.println(accelerometerResult);
+  Serial.println();
+  xSemaphoreGive(xSerialPort);
 }
 
 void DetermineRiskStatus(void *pvParameters)
