@@ -1,0 +1,22 @@
+"BPM >= 130": {shape: circle}
+"MOVEMENT FALLING": {shape: circle}
+"BPM <= 92": {shape: circle}
+"BPM <= 50": {shape: circle}
+"BPM <= 42": {shape: circle}
+"MOVEMENT REST": {shape: circle}
+"MOVEMENT ERRATIC": {shape: circle}
+
+"BPM >= 130" -> "MOVEMENT FALLING": N
+"BPM >= 130" -> "RISK HIGH ": Y
+"MOVEMENT FALLING" -> RISK HIGH: Y
+"MOVEMENT FALLING" -> "BPM <= 92": N
+"BPM <= 92" -> "BPM <= 50": Y
+"BPM <= 92" -> "MOVEMENT ERRATIC": N
+"BPM <= 50" -> "BPM <= 42": Y
+"BPM <= 42" -> "RISK LOW": N
+"BPM <= 42" -> "RISK UNCERTAIN": Y
+"BPM <= 50" -> "MOVEMENT REST": N
+"MOVEMENT REST" -> "RISK LOW ": Y
+"MOVEMENT REST" -> "RISK MEDIUM": N
+"MOVEMENT ERRATIC" -> " RISK HIGH ": Y
+"MOVEMENT ERRATIC" -> " RISK MEDIUM ": N
