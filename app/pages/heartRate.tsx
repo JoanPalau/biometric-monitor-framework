@@ -12,9 +12,9 @@ const server = 'http://localhost:3000'
 
 export async function getServerSideProps(context: NextPageContext) {
 
-  const raw_data = await fetch(`${server}/api/heart`);
-
-  const heartRates = await raw_data.json();
+  let raw_data = await fetch(`${server}/api/heart`);
+  let heartRates = await raw_data.json();
+  heartRates.reverse();
 
   return {
     props: {

@@ -6,6 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { NextPageContext } from 'next';
 
 
 function createData(
@@ -23,7 +24,26 @@ const rows = [
   createData('09/01/2022 - 15:04:00', 'RUN'),
 ];
 
-export default function HeartRate() {
+const server = 'http://localhost:3000'
+
+export async function getServerSideProps(context: NextPageContext) {
+
+  const raw_data = await fetch(`${server}/api/activity`);
+
+  let activities = await raw_data.json();
+
+  activities = activities.reverse();
+
+  return {
+    props: {
+      activities
+    }
+  };
+}
+
+export default function HeartRate(props: any) {
+  const activities: any[] = props.activities;
+
   return (
     <Container maxWidth="lg">
       <TableContainer sx={{marginTop: '1rem'}} component={Paper}>
@@ -35,15 +55,15 @@ export default function HeartRate() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
+            {activities.map((row) => (
               <TableRow
-                key={index}
+                key={row.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.timestamp}
+                  {row.created_at}
                 </TableCell>
-                <TableCell align="right">{row.activity}</TableCell>
+                <TableCell align="right">{row.value}</TableCell>
               </TableRow>
             ))}
           </TableBody>
