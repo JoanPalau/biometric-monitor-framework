@@ -42,7 +42,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(async () => {
       // setCount('Timeout called!');
-      let heartData = await fetch(
+      let heartData:any = await fetch(
         `${server}/api/heart`,
         {
           method: 'GET',
@@ -54,7 +54,7 @@ export default function Home() {
       heartData = await heartData.json();
       setHeartRate(heartData[heartData.length - 1].value);
 
-      let activityData = await fetch(
+      let activityData:any = await fetch(
         `${server}/api/activity`,
         {
           method: 'GET',
