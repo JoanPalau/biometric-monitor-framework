@@ -38,7 +38,8 @@ client.on('message', function (topic:any, message:any) {
       }
     )
   } else {
-    let data = message.toString().split(' ');
+    let data = message.toString().split('\t');
+    // console.log('abc', data.length)
     if (data.length < 4) {
       return;
     }

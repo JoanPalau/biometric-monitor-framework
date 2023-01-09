@@ -19,7 +19,7 @@ while True:
     print('Heart', r)
     client.publish(f'sensor/heart', r)
     act = random.choice(list(intensity.keys()))
-    r = f'0.0 0.0 0.0 {act}'
+    r = f'0.0\t0.0\t0.0\t{act}'
     print('Accelerometer', r)
     client.publish(f'sensor/accelerometer', r)
-    time.sleep(1)
+    time.sleep(2)
