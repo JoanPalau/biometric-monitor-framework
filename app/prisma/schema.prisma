@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BPMHistory {
+  id     Int    @id @default(autoincrement())
+  value           Int
+  created_at DateTime @default(now())
+}
+
+model ActivityHistory {
+  id     Int    @id @default(autoincrement())
+  value           String
+  created_at DateTime @default(now())
+}
