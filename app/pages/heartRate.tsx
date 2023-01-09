@@ -6,24 +6,25 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { NextPageContext } from 'next';
 
+const server = 'http://localhost:3000'
 
-function createData(
-  timestamp: string,
-  bpm: number
-) {
-  return { timestamp, bpm };
+export async function getServerSideProps(context: NextPageContext) {
+
+  const raw_data = await fetch(`${server}/api/heart`);
+
+  const heartRates = await raw_data.json();
+
+  return {
+    props: {
+      heartRates
+    }
+  };
 }
 
-const rows = [
-  createData('09/01/2022 - 15:00:00', 159),
-  createData('09/01/2022 - 15:01:00', 237),
-  createData('09/01/2022 - 15:02:00', 262),
-  createData('09/01/2022 - 15:03:00', 150),
-  createData('09/01/2022 - 15:04:00', 356),
-];
-
-export default function HeartRate() {
+export default function HeartRate(props: any) {
+  const heartRates: any[] = props.heartRates;
   return (
     <Container maxWidth="lg">
       <TableContainer sx={{marginTop: '1rem'}} component={Paper}>
@@ -35,15 +36,15 @@ export default function HeartRate() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
+            {heartRates.map((row) => (
               <TableRow
-                key={index}
+                key={row.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.timestamp}
+                  {row.created_at}
                 </TableCell>
-                <TableCell align="right">{row.bpm}</TableCell>
+                <TableCell align="right">{row.value}</TableCell>
               </TableRow>
             ))}
           </TableBody>
