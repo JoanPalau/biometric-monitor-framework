@@ -1,10 +1,13 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Link from '../src/Link';
 
 export default function Home() {
+
+  const [heartRate, setHeartRate] = useState('--');
+  const [activity, setActivity] = useState('No data');
+
   return (
       <Container maxWidth="lg">
         <Box
@@ -12,23 +15,24 @@ export default function Home() {
             my: 4,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'normal',
-            alignItems: 'normal'
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '80vh'
           }}
         >
           <Typography variant="h4" component="h1" gutterBottom>
-            General Information
+            Heart Rate
           </Typography>
-
+          <Typography variant="h6" component="h1" gutterBottom>
+            {heartRate}
+          </Typography>
 
           <Typography variant="h4" component="h1" gutterBottom>
-            Live data
+            Activity
           </Typography>
-
-
-          <Link href="/about" color="secondary">
-            Go to the about page
-          </Link>
+          <Typography variant="h6" component="h1" gutterBottom>
+            {activity}
+          </Typography>
           
         </Box>
       </Container>
