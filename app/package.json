@@ -21,7 +21,8 @@
     "mqtt": "^4.3.7",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-simple-maps": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "latest",

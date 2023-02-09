@@ -41,7 +41,7 @@ export async function getServerSideProps(context: NextPageContext) {
   };
 }
 
-export default function HeartRate(props: any) {
+export default function Movement(props: any) {
   const activities: any[] = props.activities;
 
   return (
