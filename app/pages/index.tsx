@@ -111,6 +111,27 @@ export default function Home() {
 
 
   const handleSOSClick = () => {
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+      console.log("Latitude is :", position.coords.latitude);
+      console.log("Longitude is :", position.coords.longitude);
+
+      fetch(
+        `${server}/api/alerts`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            activity: activity,
+            long: position.coords.longitude.toString(),
+            lat: position.coords.latitude.toString(),
+          }),
+          headers: {
+            'Content-type': 'application/json'
+          }
+        })
+    });
+
+
     router.push('/sos');
   }
 
@@ -155,7 +176,6 @@ export default function Home() {
                   SOS
               </Button> : null
           }
-          
         </Box>
       </Container>
   );

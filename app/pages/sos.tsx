@@ -23,16 +23,20 @@ const server = 'http://localhost:3000'
 
 export async function getServerSideProps(context: NextPageContext) {
 
-    const raw_data = await fetch(`${server}/api/activity`);
+    //const raw_data = await fetch(`${server}/api/activity`);
 
-    let activities = await raw_data.json();
+    //let activities = await raw_data.json();
 
-    activities = activities.reverse();
+    //activities = activities.reverse();
 
-    const activity = activities[0];
+    const raw_data = await fetch(`${server}/api/alerts`);
 
-    const date = new Date();
-    const alerts = [{ id: 1, created_at: date.toString(), value: activity.value, user: 'Joan' }]
+    let alerts = await raw_data.json();
+
+    //const activity = activities[0];
+
+    //const date = new Date();
+    //const alerts = [{ id: 1, created_at: date.toString(), value: activity.value, user: 'Joan' }]
 
     return {
         props: {
@@ -86,19 +90,24 @@ export default function Sos(props: any) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
+                            {
+                                props.alerts.map(alert => (
+                                    <TableRow
+                                        key={alert.id}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell component="th" scope="row">
+                                            {
+                                                alert.created_at
+                                            }
+                                        </TableCell>
+                                        <TableCell align="right">{alert.activity}</TableCell>
+                                        <TableCell>{alert.user}</TableCell>
+                                    </TableRow>
+                                ))
+                            }
 
-                            <TableRow
-                                key={props.alerts[0].id}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {
-                                        props.alerts[0].created_at
-                                    }
-                                </TableCell>
-                                <TableCell align="right">{props.alerts[0].value}</TableCell>
-                                <TableCell>{props.alerts[0].user}</TableCell>
-                            </TableRow>
+
 
                         </TableBody>
                     </Table>

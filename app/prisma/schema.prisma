@@ -18,3 +18,13 @@ model ActivityHistory {
   value      String
   created_at DateTime @default(now())
 }
+
+model AlertsHistory {
+  id         Int      @id @default(autoincrement())
+  activity   String
+  user       String
+  long       String
+  lat        String
+  ack        Boolean    @default(false)    
+  created_at DateTime @default(now())
+}
